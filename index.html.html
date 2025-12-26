@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Health Care Services</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 0; background:#f4f4f4; }
+  .container { max-width: 600px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  h2 { text-align: center; color: #333; }
+  label { display: block; margin-top: 10px; }
+  input, select { width: 100%; padding: 8px; margin-top: 5px; border-radius:5px; border:1px solid #ccc; }
+  button { background: #28a745; color: #fff; padding: 10px; margin-top: 15px; border: none; border-radius:5px; cursor:pointer; width: 100%; }
+  button:hover { background: #218838; }
+  .test-list { margin-top: 10px; }
+  .test-item { padding: 5px; border-bottom: 1px solid #ddd; cursor:pointer; }
+  .test-item:hover { background: #f0f0f0; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Krishna Health Care Services</h2>
+  
+  <label for="lab">Select Lab Partner:</label>
+  <select id="lab">
+    <option value="Thyrocare">Thyrocare</option>
+    <option value="Pathcare">Pathcare</option>
+    <option value="Sage Path Lab">Sage Path Lab</option>
+    <option value="General Diagnosis">General Diagnosis</option>
+    <option value="Sewarth Path Lab">Sewarth Path Lab</option>
+    <option value="Medcis">Medcis</option>
+  </select>
+  
+  <label for="testSearch">Search Test:</label>
+  <input type="text" id="testSearch" placeholder="Type test name...">
+  
+  <div class="test-list" id="testList"></div>
+  
+  <form id="bookingForm">
+    <label>Name:</label>
+    <input type="text" id="name" required>
+    
+    <label>Age:</label>
+    <input type="number" id="age" required>
+    
+    <label>Gender:</label>
+    <select id="gender">
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+    
+    <label>Address:</label>
+    <input type="text" id="address" required>
+    
+    <label>Pin Code:</label>
+    <input type="text" id="pincode" required>
+    
+    <label>Date:</label>
+    <input type="date" id="date" required>
+    
+    <label>Time Slot:</label>
+    <input type="time" id="time" required>
+    
+    <label>Payment Option:</label>
+    <select id="payment">
+      <option value="Cash">Cash</option>
+      <option value="UPI QR">UPI QR</option>
+      <option value="Online Payment">Online Payment</option>
+    </select>
+    
+    <button type="submit">Book on WhatsApp</button>
+  </form>
+</div>
+
+<script>
+const testData = [
+  {name: "CBC", mrp: 300, rate: 200},
+  {name: "Blood Sugar", mrp: 200, rate: 120},
+  {name: "Thyroid Profile", mrp: 500, rate: 300},
+  {name: "Lipid Profile", mrp: 800, rate: 480}
+];
+
+const testSearch = document.getElementById('testSearch');
+const testList = document.getElementById('testList');
+let selectedTest = '';
+
+function displayTests(filter='') {
+  testList.innerHTML = '';
+  const filtered = testData.filter(t => t.name.toLowerCase().includes(filter.toLowerCase()));
+  filtered.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'test-item';
+    div.textContent = `${t.name} - MRP: ₹${t.mrp} | Your Rate: ₹${t.rate}`;
+    div.onclick = () => { selectedTest = t.name; testSearch.value = t.name; testList.innerHTML=''; };
+    testList.appendChild(div);
+  });
+}
+
+testSearch.addEventListener('input', () => displayTests(testSearch.value));
+
+displayTests();
+
+document.getElementById('bookingForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  if(!selectedTest){ alert("Please select a test."); return; }
+  
+  const name = document.getElementById('name').value;
+  const age = document.getElementById('age').value;
+  const gender = document.getElementById('gender').value;
+  const address = document.getElementById('address').value;
+  const pincode = document.getElementById('pincode').value;
+  const date = document.getElementById('date').value;
+  const time = document.getElementById('time').value;
+  const lab = document.getElementById('lab').value;
+  const payment = document.getElementById('payment').value;
+  
+  const msg = `*Krishna Health Care Booking*\n\nName: ${name}\nAge: ${age}\nGender: ${gender}\nAddress: ${address}\nPin: ${pincode}\nLab: ${lab}\nTest: ${selectedTest}\nDate: ${date}\nTime: ${time}\nPayment: ${payment}`;
+  
+  const whatsappURL = `https://api.whatsapp.com/send?phone=918120262770&text=${encodeURIComponent(msg)}`;
+  window.open(whatsappURL, '_blank');
+});
+</script>
+
+</body>
+</html>
